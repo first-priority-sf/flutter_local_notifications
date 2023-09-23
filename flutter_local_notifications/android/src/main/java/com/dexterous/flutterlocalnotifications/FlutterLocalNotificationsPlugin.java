@@ -168,7 +168,6 @@ public class FlutterLocalNotificationsPlugin implements MethodCallHandler, Plugi
         if (VERSION.SDK_INT >= VERSION_CODES.S) {
             flags |= PendingIntent.FLAG_IMMUTABLE;
         }
-
         PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationDetails.id, intent, flags);
         DefaultStyleInformation defaultStyleInformation = (DefaultStyleInformation) notificationDetails.styleInformation;
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, notificationDetails.channelId)
@@ -330,7 +329,11 @@ public class FlutterLocalNotificationsPlugin implements MethodCallHandler, Plugi
         String notificationDetailsJson = gson.toJson(notificationDetails);
         Intent notificationIntent = new Intent(context, ScheduledNotificationReceiver.class);
         notificationIntent.putExtra(NOTIFICATION_DETAILS, notificationDetailsJson);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationDetails.id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (VERSION.SDK_INT >= VERSION_CODES.S) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationDetails.id, notificationIntent, flags);
 
         AlarmManager alarmManager = getAlarmManager(context);
         if (BooleanUtils.getValue(notificationDetails.allowWhileIdle)) {
@@ -349,7 +352,11 @@ public class FlutterLocalNotificationsPlugin implements MethodCallHandler, Plugi
         String notificationDetailsJson = gson.toJson(notificationDetails);
         Intent notificationIntent = new Intent(context, ScheduledNotificationReceiver.class);
         notificationIntent.putExtra(NOTIFICATION_DETAILS, notificationDetailsJson);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationDetails.id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (VERSION.SDK_INT >= VERSION_CODES.S) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationDetails.id, notificationIntent, flags);
         AlarmManager alarmManager = getAlarmManager(context);
         long epochMilli = VERSION.SDK_INT >= VERSION_CODES.O ? ZonedDateTime.of(LocalDateTime.parse(notificationDetails.scheduledDateTime), ZoneId.of(notificationDetails.timeZoneName)).toInstant().toEpochMilli() : org.threeten.bp.ZonedDateTime.of(org.threeten.bp.LocalDateTime.parse(notificationDetails.scheduledDateTime), org.threeten.bp.ZoneId.of(notificationDetails.timeZoneName)).toInstant().toEpochMilli();
         if (BooleanUtils.getValue(notificationDetails.allowWhileIdle)) {
@@ -370,7 +377,11 @@ public class FlutterLocalNotificationsPlugin implements MethodCallHandler, Plugi
         String notificationDetailsJson = gson.toJson(notificationDetails);
         Intent notificationIntent = new Intent(context, ScheduledNotificationReceiver.class);
         notificationIntent.putExtra(NOTIFICATION_DETAILS, notificationDetailsJson);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationDetails.id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (VERSION.SDK_INT >= VERSION_CODES.S) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationDetails.id, notificationIntent, flags);
         AlarmManager alarmManager = getAlarmManager(context);
         AlarmManagerCompat.setExactAndAllowWhileIdle(alarmManager, AlarmManager.RTC_WAKEUP, notificationTriggerTime, pendingIntent);
         saveScheduledNotification(context, notificationDetails);
@@ -399,7 +410,11 @@ public class FlutterLocalNotificationsPlugin implements MethodCallHandler, Plugi
         String notificationDetailsJson = gson.toJson(notificationDetails);
         Intent notificationIntent = new Intent(context, ScheduledNotificationReceiver.class);
         notificationIntent.putExtra(NOTIFICATION_DETAILS, notificationDetailsJson);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationDetails.id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (VERSION.SDK_INT >= VERSION_CODES.S) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationDetails.id, notificationIntent, flags);
         AlarmManager alarmManager = getAlarmManager(context);
 
         if (BooleanUtils.getValue(notificationDetails.allowWhileIdle)) {
@@ -1142,7 +1157,11 @@ public class FlutterLocalNotificationsPlugin implements MethodCallHandler, Plugi
 
     private void cancelNotification(Integer id, String tag) {
         Intent intent = new Intent(applicationContext, ScheduledNotificationReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(applicationContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (VERSION.SDK_INT >= VERSION_CODES.S) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(applicationContext, id, intent, flags);
         AlarmManager alarmManager = getAlarmManager(applicationContext);
         alarmManager.cancel(pendingIntent);
         NotificationManagerCompat notificationManager = getNotificationManager(applicationContext);
@@ -1166,7 +1185,11 @@ public class FlutterLocalNotificationsPlugin implements MethodCallHandler, Plugi
         Intent intent = new Intent(applicationContext, ScheduledNotificationReceiver.class);
         for (NotificationDetails scheduledNotification :
                 scheduledNotifications) {
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(applicationContext, scheduledNotification.id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (VERSION.SDK_INT >= VERSION_CODES.S) {
+                flags |= PendingIntent.FLAG_IMMUTABLE;
+            }
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(applicationContext, scheduledNotification.id, intent, flags);
             AlarmManager alarmManager = getAlarmManager(applicationContext);
             alarmManager.cancel(pendingIntent);
         }
